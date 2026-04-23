@@ -23,10 +23,6 @@ class order extends Model
         'payment_status'
     ];
 
-    protected $casts = [
-        'order_date' => 'datetime',
-    ];
-
     public function menu(): BelongsTo
     {
         return $this->belongsTo(Menu::class);

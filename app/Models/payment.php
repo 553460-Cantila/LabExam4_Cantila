@@ -10,14 +10,17 @@ class payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['order_id', 'amount_paid', 'change_given', 'notes'];
+    protected $table = 'payments';
 
-    protected $casts = [
-        'payment_date' => 'datetime',
+    protected $fillable = [
+        'order_id',
+        'amount_paid',
+        'change_given',
     ];
+
 
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(order::class);
     }
 }

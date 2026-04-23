@@ -11,12 +11,12 @@ class menuController extends Controller
     public function index()
     {
         $menus = menu::orderBy('name')->paginate(10);
-        return view('menus.index', compact('menus'));
+        return view('menu.menu', compact('menus'));
     }
 
     public function create()
     {
-        return view('menus.create');
+        return view('menu.createmenu');
     }
 
     public function store(Request $request)
@@ -36,7 +36,7 @@ class menuController extends Controller
 
     public function edit(menu $menu)
     {
-        return view('menus.edit', compact('menu'));
+        return view('menu.editmenu', compact('menu'));
     }
 
     public function update(Request $request, menu $menu)
