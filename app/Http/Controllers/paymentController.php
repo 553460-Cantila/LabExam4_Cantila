@@ -2,34 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\Payment;
+use App\Models\order;
+use App\Models\payment;
 use Illuminate\Http\Request;
 
-class PaymentController extends Controller
+class paymentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Payment::with('order');
+        $query = payment::with('order');
 
         if ($request->filled('order_id')) {
             $query->where('order_id', $request->order_id);
         }
 
         $payments = $query->orderBy('payment_date', 'desc')->paginate(20);
-        $orders = Order::select('id', 'customer_name')
+        $orders = order::select('id', 'customer_name')
             ->orderBy('created_at', 'desc')
             ->get();
 
         return view('payments.index', compact('payments', 'orders'));
     }
 
-    public function create(Order $order)
+    public function create(order $order)
     {
         return view('payments.create', compact('order'));
     }
 
-    public function store(Request $request, Order $order)
+    public function store(Request $request, order $order)
     {
         $validated = $request->validate([
             'amount_given' => 'required|numeric|min:0.01',
@@ -50,7 +50,7 @@ class PaymentController extends Controller
             $amountToApply = $remainingBalance;
         }
 
-        Payment::create([
+        payment::create([
             'order_id' => $order->id,
             'amount_paid' => $amountToApply,
             'change_given' => $change,
@@ -59,14 +59,14 @@ class PaymentController extends Controller
 
         $order->paid_amount += $amountToApply;
         $order->save();
-        $order->updatePaymentStatus();
+        $order->updatepaymentStatus();
 
-        $message = "Payment of ₱" . number_format($amountToApply, 2) . " processed successfully.";
+        $message = "payment of ₱" . number_format($amountToApply, 2) . " processed successfully.";
         if ($change > 0) {
             $message .= " Change: ₱" . number_format($change, 2);
         }
         if ($order->payment_status === 'paid') {
-            $message .= " Order is now fully paid.";
+            $message .= " order is now fully paid.";
         }
 
         return redirect()->route('payments.index')

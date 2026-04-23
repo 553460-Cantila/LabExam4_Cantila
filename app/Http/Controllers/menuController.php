@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Menu;
+use App\Models\menu;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class MenuController extends Controller
+class menuController extends Controller
 {
     public function index()
     {
-        $menus = Menu::orderBy('name')->paginate(10);
+        $menus = menu::orderBy('name')->paginate(10);
         return view('menus.index', compact('menus'));
     }
 
@@ -28,18 +28,18 @@ class MenuController extends Controller
             'stock' => 'required|integer|min:0',
         ]);
 
-        Menu::create($validated);
+        menu::create($validated);
 
         return redirect()->route('menus.index')
             ->with('success', 'Rice product added successfully.');
     }
 
-    public function edit(Menu $menu)
+    public function edit(menu $menu)
     {
         return view('menus.edit', compact('menu'));
     }
 
-    public function update(Request $request, Menu $menu)
+    public function update(Request $request, menu $menu)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('menus')->ignore($menu->id)],
@@ -54,7 +54,7 @@ class MenuController extends Controller
             ->with('success', 'Rice product updated successfully.');
     }
 
-    public function destroy(Menu $menu)
+    public function destroy(menu $menu)
     {
         if ($menu->orders()->exists()) {
             return back()->with('error', 'Cannot delete product with existing orders.');
